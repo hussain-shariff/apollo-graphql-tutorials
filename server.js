@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000
 
 app.use('/graphql', graphqlHTTP({
     schema,
-    graphiql : process.env.NODE_ENV === "development"
+    graphiql : true
 }))
 
 app.get('/', (req, res)=>{
