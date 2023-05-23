@@ -7,6 +7,7 @@ const {
 	GraphQLList,
 } = require("graphql")
 const jobsModel = require("../models/jobSchema")
+const authModel = require("../models/userSchema")
 const mongoose = require("mongoose")
 
 const JobsType = new GraphQLObjectType({
@@ -22,6 +23,18 @@ const JobsType = new GraphQLObjectType({
 	}),
 })
 
+const UserType = new GraphQLObjectType({
+	name: "User",
+	fields: () => ({
+		id: { type: GraphQLID },
+		username: { type: GraphQLString },
+		lastname: { type: GraphQLString },
+		password: { type: GraphQLString },
+		email: { type: GraphQLString },
+		location: { type: GraphQLString },
+	}),
+})
+
 const ClientType = new GraphQLObjectType({
 	name: "Client",
 	fields: () => ({
@@ -29,6 +42,15 @@ const ClientType = new GraphQLObjectType({
 		name: { type: GraphQLString },
 		email: { type: GraphQLString },
 		phone: { type: GraphQLString },
+	}),
+})
+
+const LoginType = new GraphQLObjectType({
+	name: "Login",
+	fields: () => ({
+		user: { type: GraphQLString },
+		token: { type: GraphQLString },
+		error: { type: GraphQLString },
 	}),
 })
 
@@ -82,6 +104,27 @@ const RootQuery = new GraphQLObjectType({
 			type: new GraphQLList(JobsType),
 			resolve(parent, args) {
 				return jobsModel.find({})
+			},
+		},
+		login: {
+			type: LoginType,
+			args: {
+				email: { type: GraphQLString },
+				password: { type: GraphQLString },
+			},
+			async resolve(parent, args) {
+				const user = await authModel.findOne({ email: args.email })
+				if (!user) {
+					return { error: "Invalid Credentials." }
+				} else {
+					const checkPassword = await user.comparePasswords(args.password)
+					if (!checkPassword) {
+						return { error: "Invalid Credentials." }
+					} else {
+						const token = user.createJWT()
+						return { user: user.username, token }
+					}
+				}
 			},
 		},
 	},
