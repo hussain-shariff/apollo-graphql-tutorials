@@ -6,6 +6,21 @@ const {
 	GraphQLSchema,
 	GraphQLList,
 } = require("graphql")
+const jobsModel = require("../models/jobSchema")
+const mongoose = require("mongoose")
+
+const JobsType = new GraphQLObjectType({
+	name: "Job",
+	fields: () => ({
+		id: { type: GraphQLID },
+		position: { type: GraphQLString },
+		company: { type: GraphQLString },
+		status: { type: GraphQLString },
+		location: { type: GraphQLString },
+		jobType: { type: GraphQLString },
+		createdBy: { type: GraphQLString },
+	}),
+})
 
 const ClientType = new GraphQLObjectType({
 	name: "Client",
@@ -61,6 +76,12 @@ const RootQuery = new GraphQLObjectType({
 			args: { id: { type: GraphQLID } },
 			resolve(parent, args) {
 				return projects.find((each) => each.id === args.id)
+			},
+		},
+		jobs: {
+			type: new GraphQLList(JobsType),
+			resolve(parent, args) {
+				return jobsModel.find({})
 			},
 		},
 	},
