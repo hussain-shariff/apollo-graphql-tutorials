@@ -3,6 +3,7 @@ const app = express()
 require("dotenv").config
 const {graphqlHTTP} = require('express-graphql')
 const schema = require('./schemas/schema')
+const connectDB = require('./db/connect')
 
 const PORT = process.env.PORT || 5000
 
@@ -15,4 +16,16 @@ app.get('/', (req, res)=>{
     res.send('hello world')
 })
 
-app.listen(PORT, () => console.log(`server running on port ${PORT}`))
+const start = async()=>{
+    try{
+        await connectDB(process.env.MONGO_URI)
+        app.listen(PORT, () => console.log(`server running on port ${PORT}`))
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+start()
+
+
