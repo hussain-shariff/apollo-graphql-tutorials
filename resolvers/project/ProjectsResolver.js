@@ -1,4 +1,4 @@
-const projectModel = require("../models/projectSchema")
+const projectModel = require("../../models/projectSchema")
 
 const ProjectsResolver = async (parent, args) => {
 	const Projects = await projectModel.find({})

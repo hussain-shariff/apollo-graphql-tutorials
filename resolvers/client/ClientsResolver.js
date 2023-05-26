@@ -1,4 +1,4 @@
-const clientModel = require("../models/clientSchema")
+const clientModel = require("../../models/clientSchema")
 
 const ClientsResolver = async (parent, args) => {
 	const Clients = await clientModel.find({})

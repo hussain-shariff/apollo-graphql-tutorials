@@ -1,5 +1,5 @@
 const { GraphQLObjectType, GraphQLID, GraphQLString } = require("graphql")
-const ProjectClientResolver = require("../resolvers/ProjectClientResolver")
+const ProjectClientResolver = require("../resolvers/client/ProjectClientResolver")
 
 const ProjectType = new GraphQLObjectType({
 	name: "Project",
