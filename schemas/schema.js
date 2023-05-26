@@ -1,37 +1,27 @@
 const {
 	GraphQLObjectType,
-	GraphQLID,
 	GraphQLNonNull,
-	GraphQLString,
 	GraphQLSchema,
 	GraphQLList,
+	GraphQLString,
 } = require("graphql")
-const jobsModel = require("../models/jobSchema")
 const mongoose = require("mongoose")
-const { JobsType, UserType, LoginType } = require("../types/types")
-const LoginResolver = require("../resolvers/LoginResolver")
-const RegisterResolver = require("../resolvers/RegisterResolver")
+const { ProjectType, ClientType } = require("../types/types")
+const ClientsResolver = require("../resolvers/ClientsResolver")
+const ProjectsResolver = require("../resolvers/ProjectsResolver")
+const CreateClientResolver = require("../resolvers/CreateCLientResolver")
 
 // Queries
 const RootQuery = new GraphQLObjectType({
 	name: "RootQueryType",
 	fields: {
-		getALlJobs: {
-			type: new GraphQLList(JobsType),
-			args : {
-				token : {type: GraphQLString}
-			},
-			resolve(parent, args) {
-				return jobsModel.find({})
-			},
+		clients: {
+			type: new GraphQLList(ClientType),
+			resolve: ClientsResolver,
 		},
-		login: {
-			type: LoginType,
-			args: {
-				email: { type: GraphQLString },
-				password: { type: GraphQLString },
-			},
-			resolve: LoginResolver,
+		projects: {
+			type: new GraphQLList(ProjectType),
+			resolve: ProjectsResolver,
 		},
 	},
 })
@@ -40,18 +30,18 @@ const RootQuery = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
 	name: "Mutation",
 	fields: {
-		register: {
-			type: LoginType,
+		createClient: {
+			type: ClientType,
 			args: {
-				username: { type: GraphQLNonNull(GraphQLString) },
-				email: { type: GraphQLNonNull(GraphQLString) },
-				password: { type: GraphQLNonNull(GraphQLString) },
+				name: { type: new GraphQLNonNull(GraphQLString) },
+				email: { type: new GraphQLNonNull(GraphQLString) },
+				phone: { type: new GraphQLNonNull(GraphQLString) },
 			},
-			resolve: RegisterResolver,
+			resolve: CreateClientResolver,
 		},
 	},
 })
 module.exports = new GraphQLSchema({
 	query: RootQuery,
-	mutation
+	mutation,
 })

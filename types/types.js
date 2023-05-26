@@ -1,37 +1,28 @@
 const { GraphQLObjectType, GraphQLID, GraphQLString } = require("graphql")
+const ProjectClientResolver = require("../resolvers/ProjectClientResolver")
 
-const JobsType = new GraphQLObjectType({
-	name: "Job",
+const ProjectType = new GraphQLObjectType({
+	name: "Project",
 	fields: () => ({
 		id: { type: GraphQLID },
-		position: { type: GraphQLString },
-		company: { type: GraphQLString },
+		name: { type: GraphQLString },
+		description: { type: GraphQLString },
 		status: { type: GraphQLString },
-		location: { type: GraphQLString },
-		jobType: { type: GraphQLString },
-		createdBy: { type: GraphQLString },
+		client: {
+			type: ClientType,
+			resolve: ProjectClientResolver,
+		},
 	}),
 })
 
-const UserType = new GraphQLObjectType({
-	name: "User",
+const ClientType = new GraphQLObjectType({
+	name: "Client",
 	fields: () => ({
 		id: { type: GraphQLID },
-		username: { type: GraphQLString },
-		lastname: { type: GraphQLString },
-		password: { type: GraphQLString },
+		name: { type: GraphQLString },
 		email: { type: GraphQLString },
-		location: { type: GraphQLString },
+		phone: { type: GraphQLString },
 	}),
 })
 
-const LoginType = new GraphQLObjectType({
-	name: "Login",
-	fields: () => ({
-		user: { type: GraphQLString },
-		token: { type: GraphQLString },
-		error: { type: GraphQLString },
-	}),
-})
-
-module.exports = { LoginType, UserType, JobsType }
+module.exports = { ProjectType, ClientType }
