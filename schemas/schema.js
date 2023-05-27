@@ -16,6 +16,8 @@ const clientSchema = require("../models/clientSchema")
 const projectSchema = require("../models/projectSchema")
 const CreateProjectResolver = require("../resolvers/project/CreateProjectResolver")
 const DeleteClientResolver = require("../resolvers/client/DeleteClientResolver")
+const DeleteProjectResolver = require("../resolvers/project/DeleteProjectResolver")
+const createCLientMutation = require("./mutations/createClientMutation")
 
 // Queries
 const RootQuery = new GraphQLObjectType({
@@ -50,15 +52,7 @@ const RootQuery = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
 	name: "Mutation",
 	fields: {
-		createClient: {
-			type: ClientType,
-			args: {
-				name: { type: new GraphQLNonNull(GraphQLString) },
-				email: { type: new GraphQLNonNull(GraphQLString) },
-				phone: { type: new GraphQLNonNull(GraphQLString) },
-			},
-			resolve: CreateClientResolver,
-		},
+		createClient: createCLientMutation,
 		deleteClient: {
 			type: ClientType,
 			args: {
@@ -91,7 +85,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				id: { type: new GraphQLNonNull(GraphQLID) },
 			},
-			resolve: DeleteClientResolver,
+			resolve: DeleteProjectResolver,
 		},
 	},
 })
@@ -99,4 +93,3 @@ module.exports = new GraphQLSchema({
 	query: RootQuery,
 	mutation,
 })
-// "Not started", "In-progess", "Completed"
